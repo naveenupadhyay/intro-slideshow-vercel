@@ -20,7 +20,6 @@ export const introContent = {
     portrait: "/nav.jpg"
   },
   intro: {
-    skipLabel: "Skip Intro",
     finalCtaLabel: "View LinkedIn",
     sequences: [
       {

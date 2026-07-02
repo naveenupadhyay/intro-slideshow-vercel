@@ -60,15 +60,6 @@ export function IntroAnimation() {
       exit={{ opacity: 0, scale: 1.025, filter: "blur(16px)" }}
       transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
     >
-      {!finalPhase && (
-        <button
-          className="absolute right-4 top-4 z-30 rounded-lg border border-zinc-200 bg-white/80 px-3 py-2 text-xs font-semibold text-zinc-700 shadow-[0_14px_40px_rgba(0,0,0,0.08)] backdrop-blur transition hover:border-zinc-950 hover:text-zinc-950 md:right-8 md:top-6"
-          onClick={() => setPhase(phases.length)}
-        >
-          {introContent.intro.skipLabel}
-        </button>
-      )}
-
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(194,65,12,0.10),transparent_30%),radial-gradient(circle_at_78%_22%,rgba(250,204,21,0.12),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(244,244,245,0.58))]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(24,24,27,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(24,24,27,0.035)_1px,transparent_1px)] bg-[size:86px_86px] opacity-60" />
       <div className="absolute right-[8%] top-[10%] h-44 w-52 rotate-[-16deg] bg-[#fff0c7] shadow-[0_28px_70px_rgba(194,65,12,0.12)] [clip-path:polygon(0_0,100%_20%,28%_100%)]" />
