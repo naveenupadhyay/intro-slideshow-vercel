@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { TouchEvent, WheelEvent } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { iconMap, introContent } from "../data/introContent";
@@ -9,6 +10,8 @@ const INTRO_PHASE_MS = 5200;
 export function IntroAnimation() {
   const [phase, setPhase] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef<number | null>(null);
+  const lastGestureAt = useRef(0);
   const phases = introContent.intro.sequences;
   const finalPhase = phase >= phases.length;
   const current = phases[Math.min(phase, phases.length - 1)];
@@ -43,7 +46,7 @@ export function IntroAnimation() {
 
     const timers = phases.map((_, index) =>
       window.setTimeout(() => {
-        setPhase((currentPhase) => (currentPhase >= phases.length ? currentPhase : index + 1));
+        setPhase((currentPhase) => (currentPhase >= phases.length ? currentPhase : Math.max(currentPhase, index + 1)));
       }, (index + 1) * INTRO_PHASE_MS)
     );
 
@@ -53,12 +56,63 @@ export function IntroAnimation() {
     };
   }, [phases]);
 
+  const advancePhase = useCallback(() => {
+    setPhase((currentPhase) => Math.min(phases.length, currentPhase + 1));
+  }, [phases.length]);
+
+  const retreatPhase = useCallback(() => {
+    setPhase((currentPhase) => Math.max(0, currentPhase - 1));
+  }, []);
+
+  const navigateByGesture = useCallback(
+    (direction: "next" | "previous") => {
+      const now = Date.now();
+      if (now - lastGestureAt.current < 650) return;
+      lastGestureAt.current = now;
+
+      if (direction === "next") {
+        advancePhase();
+      } else {
+        retreatPhase();
+      }
+    },
+    [advancePhase, retreatPhase]
+  );
+
+  const onWheel = useCallback(
+    (event: WheelEvent<HTMLDivElement>) => {
+      if (Math.abs(event.deltaY) < 36) return;
+      navigateByGesture(event.deltaY > 0 ? "next" : "previous");
+    },
+    [navigateByGesture]
+  );
+
+  const onTouchStart = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = event.touches[0]?.clientY ?? null;
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (event: TouchEvent<HTMLDivElement>) => {
+      if (touchStartY.current === null) return;
+
+      const diff = touchStartY.current - event.changedTouches[0].clientY;
+      touchStartY.current = null;
+
+      if (Math.abs(diff) < 48) return;
+      navigateByGesture(diff > 0 ? "next" : "previous");
+    },
+    [navigateByGesture]
+  );
+
   return (
     <motion.div
       ref={rootRef}
       className="relative z-50 grid h-dvh place-items-center overflow-hidden bg-[#fbfaf7] px-4 pb-4 pt-14 text-zinc-950 md:py-8"
       exit={{ opacity: 0, scale: 1.025, filter: "blur(16px)" }}
       transition={{ duration: 0.9, ease: [0.2, 0.8, 0.2, 1] }}
+      onWheel={onWheel}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(194,65,12,0.10),transparent_30%),radial-gradient(circle_at_78%_22%,rgba(250,204,21,0.12),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(244,244,245,0.58))]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(24,24,27,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(24,24,27,0.035)_1px,transparent_1px)] bg-[size:86px_86px] opacity-60" />
