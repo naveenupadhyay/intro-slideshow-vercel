@@ -15,6 +15,8 @@ export function IntroAnimation() {
   const phases = introContent.intro.sequences;
   const finalPhase = phase >= phases.length;
   const current = phases[Math.min(phase, phases.length - 1)];
+  const totalSteps = phases.length + 1;
+  const activeStep = Math.min(phase, totalSteps - 1);
 
   const particles = useMemo(
     () =>
@@ -114,6 +116,30 @@ export function IntroAnimation() {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
+      <ol
+        className="absolute left-4 top-4 z-30 flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white/80 p-1 shadow-[0_14px_40px_rgba(0,0,0,0.08)] backdrop-blur md:left-8 md:top-6"
+        aria-label="Intro progress"
+      >
+        {Array.from({ length: totalSteps }, (_, index) => {
+          const isActive = activeStep === index;
+          return (
+            <li key={index}>
+              <button
+                type="button"
+                aria-current={isActive ? "step" : undefined}
+                aria-label={`Go to slide ${index + 1} of ${totalSteps}`}
+                className={`grid size-7 place-items-center rounded-md text-xs font-semibold tabular-nums transition ${
+                  isActive ? "bg-zinc-950 text-white shadow-[0_8px_24px_rgba(0,0,0,0.16)]" : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950"
+                }`}
+                onClick={() => setPhase(index)}
+              >
+                {index + 1}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(194,65,12,0.10),transparent_30%),radial-gradient(circle_at_78%_22%,rgba(250,204,21,0.12),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(244,244,245,0.58))]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(24,24,27,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(24,24,27,0.035)_1px,transparent_1px)] bg-[size:86px_86px] opacity-60" />
       <div className="absolute right-[8%] top-[10%] h-44 w-52 rotate-[-16deg] bg-[#fff0c7] shadow-[0_28px_70px_rgba(194,65,12,0.12)] [clip-path:polygon(0_0,100%_20%,28%_100%)]" />
