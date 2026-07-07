@@ -172,7 +172,7 @@ export function IntroAnimation() {
         {!finalPhase ? (
           <div className="grid min-w-0 gap-4 md:grid-cols-[1.25fr_0.75fr] md:items-center lg:gap-10">
             <div className="intro-paper min-w-0 rounded-2xl border border-zinc-200 bg-white/95 p-5 shadow-[0_34px_100px_rgba(24,24,27,0.12)] backdrop-blur md:p-6 lg:p-8">
-              <div className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#c4511b]">{current.eyebrow}</div>
+              <div className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-[#c4511b] sm:text-base md:text-lg">{current.eyebrow}</div>
               <h1 className="max-w-[18.5rem] break-words text-[2rem] font-semibold leading-[1] tracking-[-0.02em] text-zinc-950 sm:max-w-full sm:text-4xl md:text-5xl lg:max-w-4xl lg:text-5xl">
                 {current.headline}
               </h1>
