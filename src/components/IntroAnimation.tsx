@@ -7,15 +7,46 @@ import { CTAButton } from "./CTAButton";
 
 const INTRO_PHASE_MS = 5200;
 
+const caseStudies = [
+  {
+    title: "AI-Native Engineering Operating System",
+    summary: "A context and control layer that orchestrates coding agents, repo knowledge, tools, tests, evals, and human review.",
+    outcomes: ["Higher leverage per engineer", "Faster idea-to-release cycles", "Safer AI adoption"]
+  },
+  {
+    title: "Finance and Accounting",
+    summary: "Audit automation for public and private filings, financial reconciliation, and evidence workflows.",
+    outcomes: ["Faster audit preparation", "Stronger evidence traceability", "Lower manual reconciliation effort"]
+  },
+  {
+    title: "Legal",
+    summary: "Contract negotiation at scale and ADR workflows combining LLMs, ML models, and decision-tree logic.",
+    outcomes: ["Faster contract review cycles", "Consistent negotiation positions", "Structured ADR support"]
+  },
+  {
+    title: "Sales Outreach",
+    summary: "Voice-agent driven sales outreach that calls customers, qualifies intent, and routes follow-up actions.",
+    outcomes: ["Higher outreach capacity", "Cleaner intent capture", "Faster follow-up cycles"]
+  },
+  {
+    title: "Customer Care",
+    summary: "Conversational AI for regulated customer support, including a Dubai government entity use case.",
+    outcomes: ["Shorter response times", "Controlled escalation paths", "Better QA visibility"]
+  }
+];
+
 export function IntroAnimation() {
   const [phase, setPhase] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number | null>(null);
   const lastGestureAt = useRef(0);
   const phases = introContent.intro.sequences;
-  const finalPhase = phase >= phases.length;
+  const linkedinPhase = phases.length;
+  const caseStudiesPhase = phases.length + 1;
+  const finalPhase = phase === linkedinPhase;
+  const caseStudiesActive = phase === caseStudiesPhase;
   const current = phases[Math.min(phase, phases.length - 1)];
-  const totalSteps = phases.length + 1;
+  const totalSteps = phases.length + 2;
   const activeStep = Math.min(phase, totalSteps - 1);
 
   const particles = useMemo(
@@ -48,7 +79,7 @@ export function IntroAnimation() {
 
     const timers = phases.map((_, index) =>
       window.setTimeout(() => {
-        setPhase((currentPhase) => (currentPhase >= phases.length ? currentPhase : Math.max(currentPhase, index + 1)));
+        setPhase((currentPhase) => (currentPhase >= linkedinPhase ? currentPhase : Math.max(currentPhase, index + 1)));
       }, (index + 1) * INTRO_PHASE_MS)
     );
 
@@ -56,11 +87,11 @@ export function IntroAnimation() {
       timers.forEach(window.clearTimeout);
       ctx.revert();
     };
-  }, [phases]);
+  }, [linkedinPhase, phases]);
 
   const advancePhase = useCallback(() => {
-    setPhase((currentPhase) => Math.min(phases.length, currentPhase + 1));
-  }, [phases.length]);
+    setPhase((currentPhase) => Math.min(totalSteps - 1, currentPhase + 1));
+  }, [totalSteps]);
 
   const retreatPhase = useCallback(() => {
     setPhase((currentPhase) => Math.max(0, currentPhase - 1));
@@ -164,12 +195,12 @@ export function IntroAnimation() {
       <motion.div
         className="relative z-10 mx-auto max-h-[calc(100dvh-4.5rem)] w-full min-w-0 max-w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain py-2 md:max-h-[calc(100dvh-4rem)] md:max-w-6xl"
         data-testid="intro-stage"
-        key={finalPhase ? "final" : phase}
+        key={caseStudiesActive ? "case-studies" : finalPhase ? "final" : phase}
         initial={{ opacity: 0, y: 28, filter: "blur(12px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
-        {!finalPhase ? (
+        {phase < linkedinPhase ? (
           <div className="grid min-w-0 gap-4 md:grid-cols-[1.25fr_0.75fr] md:items-center lg:gap-10">
             <div className="intro-paper min-w-0 rounded-2xl border border-zinc-200 bg-white/95 p-5 shadow-[0_34px_100px_rgba(24,24,27,0.12)] backdrop-blur md:p-6 lg:p-8">
               <div className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-[#c4511b] sm:text-base md:text-lg">{current.eyebrow}</div>
@@ -194,7 +225,7 @@ export function IntroAnimation() {
             </div>
             <IntroPanel phase={phase} />
           </div>
-        ) : (
+        ) : finalPhase ? (
           <div className="mx-auto grid max-w-5xl gap-6 rounded-2xl border border-zinc-200 bg-white/95 p-6 text-center shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:grid-cols-[0.8fr_1fr] md:p-8 md:text-left">
             <div className="mx-auto w-full max-w-[260px] overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_24px_60px_rgba(0,0,0,0.12)] md:mx-0">
               <img src={introContent.brand.portrait} alt={introContent.brand.founder} className="aspect-[4/5] w-full object-cover" />
@@ -210,9 +241,55 @@ export function IntroAnimation() {
               </div>
             </div>
           </div>
+        ) : (
+          <CaseStudiesSection />
         )}
       </motion.div>
     </motion.div>
+  );
+}
+
+function CaseStudiesSection() {
+  return (
+    <section className="mx-auto max-w-6xl rounded-2xl border border-zinc-200 bg-white/95 p-5 shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:p-7">
+      <div className="grid gap-4 md:grid-cols-[0.78fr_1.22fr] md:items-start">
+        <div>
+          <div className="text-sm font-bold uppercase tracking-[0.16em] text-[#c4511b] sm:text-base">Case studies</div>
+          <h1 className="mt-4 text-3xl font-semibold leading-[0.98] tracking-[-0.02em] text-zinc-950 sm:text-4xl lg:text-5xl">
+            Case studies I oversaw with a dedicated engineering and product org.
+          </h1>
+          <p className="mt-5 text-base leading-7 text-zinc-700 md:text-lg">
+            Practical examples from AI product engineering work across engineering, finance, legal, sales, and customer care, overseen by me with a focused engineering and product organization.
+          </p>
+          <div className="mt-6">
+            <CTAButton href="https://www.eleventyfirstparallel.in/case-studies">View Full Case Studies</CTAButton>
+          </div>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-2">
+          {caseStudies.map((study, index) => (
+            <article key={study.title} className="rounded-xl border border-zinc-200 bg-zinc-50/95 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c4511b]">Case {index + 1}</span>
+                <span className="rounded-md bg-white px-2 py-1 text-xs font-semibold tabular-nums text-zinc-500">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h2 className="mt-3 text-lg font-semibold leading-tight text-zinc-950">{study.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-zinc-700">{study.summary}</p>
+              <ul className="mt-3 grid gap-1.5">
+                {study.outcomes.map((outcome) => (
+                  <li key={outcome} className="flex gap-2 text-sm leading-5 text-zinc-700">
+                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#c4511b]" />
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
