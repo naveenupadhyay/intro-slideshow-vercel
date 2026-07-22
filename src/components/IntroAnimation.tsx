@@ -6,7 +6,7 @@ import { introContent } from "../data/introContent";
 import { CTAButton } from "./CTAButton";
 
 const VIDEO_START_DELAY_MS = 3000;
-const VIDEO_VISIBLE_SLIDES_TOTAL_MS = 30000;
+const VIDEO_VISIBLE_SLIDES_TOTAL_MS = 40000;
 
 const caseStudies = [
   {
@@ -240,6 +240,7 @@ export function IntroAnimation() {
               </div>
             </div>
             <IntroPanel showProfileVideo={showProfileVideo} soundRequested={soundRequested} />
+            <ProfileInfoCard className="md:hidden" />
           </div>
         ) : finalPhase ? (
           <div className="mx-auto grid max-w-5xl gap-6 rounded-2xl border border-zinc-200 bg-white/95 p-6 text-center shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:grid-cols-[0.8fr_1fr] md:p-8 md:text-left">
@@ -410,14 +411,20 @@ function IntroPanel({ showProfileVideo, soundRequested }: { showProfileVideo: bo
           frameClassName="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_26px_70px_rgba(0,0,0,0.14)]"
           mediaClassName="mx-auto h-[34dvh] max-h-[300px] w-auto max-w-full object-contain md:aspect-[4/5] md:h-auto md:max-h-none md:w-full md:object-cover md:object-center"
         />
-        <div className="rounded-xl border border-zinc-200 bg-white/95 p-3 md:p-4">
-          <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4511b]">{introContent.brand.founder}</div>
-          <div className="mt-2 text-lg font-semibold leading-tight text-zinc-950">CTO and CPO consultant</div>
-          <a className="mt-3 block text-sm font-semibold text-zinc-700 underline decoration-[#c4511b]/40 underline-offset-4" href={`mailto:${introContent.brand.email}`}>
-            {introContent.brand.email}
-          </a>
-        </div>
+        <ProfileInfoCard className="hidden md:block" />
       </div>
+    </div>
+  );
+}
+
+function ProfileInfoCard({ className = "" }: { className?: string }) {
+  return (
+    <div className={`rounded-xl border border-zinc-200 bg-white/95 p-3 md:p-4 ${className}`}>
+      <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4511b]">{introContent.brand.founder}</div>
+      <div className="mt-2 text-lg font-semibold leading-tight text-zinc-950">CTO and CPO consultant</div>
+      <a className="mt-3 block text-sm font-semibold text-zinc-700 underline decoration-[#c4511b]/40 underline-offset-4" href={`mailto:${introContent.brand.email}`}>
+        {introContent.brand.email}
+      </a>
     </div>
   );
 }
