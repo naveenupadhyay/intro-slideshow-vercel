@@ -17,7 +17,8 @@ export const introContent = {
     founder: "Naveen Upadhyay",
     email: "naveen.invincible@gmail.com",
     linkedin: "https://www.linkedin.com/in/naveen-u-76612210/",
-    portrait: "/nav.jpg"
+    portrait: "/nav.jpg",
+    profileVideo: "/profile-intro.mp4"
   },
   intro: {
     finalCtaLabel: "View LinkedIn",

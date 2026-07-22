@@ -37,6 +37,7 @@ const caseStudies = [
 
 export function IntroAnimation() {
   const [phase, setPhase] = useState(0);
+  const [showProfileVideo, setShowProfileVideo] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number | null>(null);
   const lastGestureAt = useRef(0);
@@ -59,6 +60,14 @@ export function IntroAnimation() {
       })),
     []
   );
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setShowProfileVideo(true);
+    }, 3000);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -223,13 +232,15 @@ export function IntroAnimation() {
                 ))}
               </div>
             </div>
-            <IntroPanel phase={phase} />
+            <IntroPanel phase={phase} showProfileVideo={showProfileVideo} />
           </div>
         ) : finalPhase ? (
           <div className="mx-auto grid max-w-5xl gap-6 rounded-2xl border border-zinc-200 bg-white/95 p-6 text-center shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:grid-cols-[0.8fr_1fr] md:p-8 md:text-left">
-            <div className="mx-auto w-full max-w-[260px] overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_24px_60px_rgba(0,0,0,0.12)] md:mx-0">
-              <img src={introContent.brand.portrait} alt={introContent.brand.founder} className="aspect-[4/5] w-full object-cover" />
-            </div>
+            <ProfileMedia
+              showVideo={showProfileVideo}
+              frameClassName="mx-auto w-full max-w-[260px] overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_24px_60px_rgba(0,0,0,0.12)] md:mx-0"
+              mediaClassName="aspect-[4/5] w-full object-cover"
+            />
             <div className="flex flex-col justify-center">
               <div className="mb-4 text-xs font-bold uppercase tracking-[0.26em] text-[#c4511b]">{introContent.brand.founder}</div>
               <h1 className="text-3xl font-semibold leading-[0.98] tracking-[-0.02em] text-zinc-950 sm:text-4xl lg:text-5xl">
@@ -261,9 +272,6 @@ function CaseStudiesSection() {
           <p className="mt-5 text-base leading-7 text-zinc-700 md:text-lg">
             Practical examples from AI product engineering work across engineering, finance, legal, sales, and customer care, overseen by me with a focused engineering and product organization.
           </p>
-          <div className="mt-6">
-            <CTAButton href="https://www.eleventyfirstparallel.in/case-studies">View Full Case Studies</CTAButton>
-          </div>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
@@ -293,7 +301,38 @@ function CaseStudiesSection() {
   );
 }
 
-function IntroPanel({ phase }: { phase: number }) {
+function ProfileMedia({
+  showVideo,
+  frameClassName,
+  mediaClassName
+}: {
+  showVideo: boolean;
+  frameClassName: string;
+  mediaClassName: string;
+}) {
+  return (
+    <div className={frameClassName}>
+      {showVideo ? (
+        <video
+          className={mediaClassName}
+          poster={introContent.brand.portrait}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-label={`${introContent.brand.founder} intro video`}
+        >
+          <source src={introContent.brand.profileVideo} type="video/mp4" />
+        </video>
+      ) : (
+        <img src={introContent.brand.portrait} alt={introContent.brand.founder} className={mediaClassName} />
+      )}
+    </div>
+  );
+}
+
+function IntroPanel({ phase, showProfileVideo }: { phase: number; showProfileVideo: boolean }) {
   if (phase === 2) {
     return (
       <div className="grid gap-3 rounded-2xl border border-zinc-200 bg-white/90 p-4 shadow-[0_34px_90px_rgba(24,24,27,0.10)] backdrop-blur">
@@ -341,9 +380,11 @@ function IntroPanel({ phase }: { phase: number }) {
     <div className="relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white/92 p-3 shadow-[0_34px_90px_rgba(24,24,27,0.12)] backdrop-blur md:p-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_18%,rgba(194,65,12,0.10),transparent_28%),radial-gradient(circle_at_76%_74%,rgba(250,204,21,0.12),transparent_30%)]" />
       <div className="relative grid gap-3 md:gap-4">
-        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_26px_70px_rgba(0,0,0,0.14)]">
-          <img src={introContent.brand.portrait} alt={introContent.brand.founder} className="aspect-[2.2/1] w-full object-cover object-[50%_28%] md:aspect-[4/5] md:object-center" />
-        </div>
+        <ProfileMedia
+          showVideo={showProfileVideo}
+          frameClassName="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_26px_70px_rgba(0,0,0,0.14)]"
+          mediaClassName="aspect-[2.2/1] w-full object-cover object-[50%_28%] md:aspect-[4/5] md:object-center"
+        />
         <div className="rounded-xl border border-zinc-200 bg-white/95 p-3 md:p-4">
           <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4511b]">{introContent.brand.founder}</div>
           <div className="mt-2 text-lg font-semibold leading-tight text-zinc-950">CTO and CPO consultant</div>
