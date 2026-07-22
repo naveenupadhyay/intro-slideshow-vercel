@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { TouchEvent, WheelEvent } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
-import { iconMap, introContent } from "../data/introContent";
+import { introContent } from "../data/introContent";
 import { CTAButton } from "./CTAButton";
 
 const INTRO_PHASE_MS = 5200;
@@ -208,14 +208,14 @@ export function IntroAnimation() {
       <motion.div
         className="relative z-10 mx-auto max-h-[calc(100dvh-4.5rem)] w-full min-w-0 max-w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain py-2 md:max-h-[calc(100dvh-4rem)] md:max-w-6xl"
         data-testid="intro-stage"
-        key={caseStudiesActive ? "case-studies" : finalPhase ? "final" : phase}
+        key={caseStudiesActive ? "case-studies" : finalPhase ? "final" : "intro"}
         initial={{ opacity: 0, y: 28, filter: "blur(12px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       >
         {phase < linkedinPhase ? (
           <div className="grid min-w-0 gap-4 md:grid-cols-[1.25fr_0.75fr] md:items-center lg:gap-10">
-            <div className="intro-paper min-w-0 rounded-2xl border border-zinc-200 bg-white/95 p-5 shadow-[0_34px_100px_rgba(24,24,27,0.12)] backdrop-blur md:p-6 lg:p-8">
+            <div key={phase} className="intro-paper min-w-0 rounded-2xl border border-zinc-200 bg-white/95 p-5 shadow-[0_34px_100px_rgba(24,24,27,0.12)] backdrop-blur md:p-6 lg:p-8">
               <div className="mb-4 text-sm font-bold uppercase tracking-[0.16em] text-[#c4511b] sm:text-base md:text-lg">{current.eyebrow}</div>
               <h1 className="max-w-[18.5rem] break-words text-[2rem] font-semibold leading-[1] tracking-[-0.02em] text-zinc-950 sm:max-w-full sm:text-4xl md:text-5xl lg:max-w-4xl lg:text-5xl">
                 {current.headline}
@@ -236,7 +236,7 @@ export function IntroAnimation() {
                 ))}
               </div>
             </div>
-            <IntroPanel phase={phase} showProfileVideo={showProfileVideo} soundRequested={soundRequested} />
+            <IntroPanel showProfileVideo={showProfileVideo} soundRequested={soundRequested} />
           </div>
         ) : finalPhase ? (
           <div className="mx-auto grid max-w-5xl gap-6 rounded-2xl border border-zinc-200 bg-white/95 p-6 text-center shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:grid-cols-[0.8fr_1fr] md:p-8 md:text-left">
@@ -319,11 +319,17 @@ function ProfileMedia({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [soundEnabled, setSoundEnabled] = useState(soundRequested);
+  const [hasEnded, setHasEnded] = useState(false);
 
-  const playVideo = useCallback(async (withSound: boolean) => {
+  const playVideo = useCallback(async (withSound: boolean, restart = false) => {
     const video = videoRef.current;
     if (!video) return;
 
+    if (restart) {
+      video.currentTime = 0;
+    }
+
+    setHasEnded(false);
     video.muted = !withSound;
     video.volume = 1;
 
@@ -353,18 +359,30 @@ function ProfileMedia({
             poster={introContent.brand.portrait}
             autoPlay
             muted={!soundEnabled}
-            loop
             playsInline
             preload="auto"
             aria-label={`${introContent.brand.founder} intro video`}
+            onEnded={() => setHasEnded(true)}
           >
             <source src={introContent.brand.profileVideo} type="video/mp4" />
           </video>
+          {hasEnded ? (
+            <button
+              type="button"
+              aria-label="Play video again"
+              className="absolute inset-0 grid place-items-center bg-zinc-950/20 backdrop-blur-[1px] transition hover:bg-zinc-950/30 focus:outline-none focus:ring-2 focus:ring-white/80"
+              onClick={() => void playVideo(soundEnabled || soundRequested, true)}
+            >
+              <span className="grid size-16 place-items-center rounded-full border border-white/55 bg-zinc-950/45 shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur md:size-20">
+                <span className="ml-1 h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white md:border-y-[12px] md:border-l-[20px]" />
+              </span>
+            </button>
+          ) : null}
           <button
             type="button"
             aria-label="Turn sound on"
             className={`absolute bottom-3 left-3 rounded-full border border-white/45 bg-zinc-950/35 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] backdrop-blur transition hover:bg-zinc-950/55 focus:outline-none focus:ring-2 focus:ring-white/80 ${
-              soundEnabled ? "pointer-events-none opacity-0" : "opacity-100"
+              soundEnabled || hasEnded ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
             onClick={() => void playVideo(true)}
           >
@@ -378,50 +396,7 @@ function ProfileMedia({
   );
 }
 
-function IntroPanel({ phase, showProfileVideo, soundRequested }: { phase: number; showProfileVideo: boolean; soundRequested: boolean }) {
-  if (phase === 2) {
-    return (
-      <div className="grid gap-3 rounded-2xl border border-zinc-200 bg-white/90 p-4 shadow-[0_34px_90px_rgba(24,24,27,0.10)] backdrop-blur">
-        {introContent.intro.pipeline.map((step, index) => {
-          const Icon = iconMap[step.icon];
-          return (
-            <motion.div
-              key={step.label}
-              className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50/95 p-4"
-              initial={{ opacity: 0, x: 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.16 }}
-            >
-              <span className="grid size-10 place-items-center rounded-lg border border-[#c4511b]/20 bg-[#c4511b]/10 text-[#c4511b]">
-                <Icon className="size-5" />
-              </span>
-              <span className="font-semibold text-zinc-900">{step.label}</span>
-            </motion.div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  if (phase === 3) {
-    return (
-      <div className="grid grid-cols-2 gap-3 rounded-2xl border border-zinc-200 bg-white/90 p-4 shadow-[0_34px_90px_rgba(24,24,27,0.10)] backdrop-blur">
-        {introContent.intro.metrics.map((metric, index) => (
-          <motion.div
-            key={metric.label}
-            className="rounded-xl border border-zinc-200 bg-zinc-50/95 p-5"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.12 }}
-          >
-            <div className="text-3xl font-semibold tracking-[-0.03em] text-zinc-950 md:text-4xl">{metric.value}</div>
-            <div className="mt-2 text-xs uppercase tracking-[0.16em] text-zinc-500">{metric.label}</div>
-          </motion.div>
-        ))}
-      </div>
-    );
-  }
-
+function IntroPanel({ showProfileVideo, soundRequested }: { showProfileVideo: boolean; soundRequested: boolean }) {
   return (
     <div className="relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white/92 p-3 shadow-[0_34px_90px_rgba(24,24,27,0.12)] backdrop-blur md:p-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_18%,rgba(194,65,12,0.10),transparent_28%),radial-gradient(circle_at_76%_74%,rgba(250,204,21,0.12),transparent_30%)]" />
