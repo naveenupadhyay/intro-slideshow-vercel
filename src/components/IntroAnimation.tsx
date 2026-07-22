@@ -38,6 +38,10 @@ const caseStudies = [
 export function IntroAnimation() {
   const [phase, setPhase] = useState(0);
   const [showProfileVideo, setShowProfileVideo] = useState(false);
+  const soundRequested = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get("sound") === "on";
+  }, []);
   const rootRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number | null>(null);
   const lastGestureAt = useRef(0);
@@ -232,12 +236,13 @@ export function IntroAnimation() {
                 ))}
               </div>
             </div>
-            <IntroPanel phase={phase} showProfileVideo={showProfileVideo} />
+            <IntroPanel phase={phase} showProfileVideo={showProfileVideo} soundRequested={soundRequested} />
           </div>
         ) : finalPhase ? (
           <div className="mx-auto grid max-w-5xl gap-6 rounded-2xl border border-zinc-200 bg-white/95 p-6 text-center shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:grid-cols-[0.8fr_1fr] md:p-8 md:text-left">
             <ProfileMedia
               showVideo={showProfileVideo}
+              soundRequested={soundRequested}
               frameClassName="mx-auto w-full max-w-[260px] overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_24px_60px_rgba(0,0,0,0.12)] md:mx-0"
               mediaClassName="aspect-[4/5] w-full object-cover"
             />
@@ -303,21 +308,41 @@ function CaseStudiesSection() {
 
 function ProfileMedia({
   showVideo,
+  soundRequested,
   frameClassName,
   mediaClassName
 }: {
   showVideo: boolean;
+  soundRequested: boolean;
   frameClassName: string;
   mediaClassName: string;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!showVideo) return;
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = !soundRequested;
+    const playback = video.play();
+    void playback.catch(() => {
+      video.muted = true;
+      void video.play().catch(() => undefined);
+    });
+  }, [showVideo, soundRequested]);
+
   return (
     <div className={frameClassName}>
       {showVideo ? (
         <video
+          ref={videoRef}
           className={mediaClassName}
           poster={introContent.brand.portrait}
           autoPlay
-          muted
+          muted={!soundRequested}
+          controls={soundRequested}
           loop
           playsInline
           preload="auto"
@@ -332,7 +357,7 @@ function ProfileMedia({
   );
 }
 
-function IntroPanel({ phase, showProfileVideo }: { phase: number; showProfileVideo: boolean }) {
+function IntroPanel({ phase, showProfileVideo, soundRequested }: { phase: number; showProfileVideo: boolean; soundRequested: boolean }) {
   if (phase === 2) {
     return (
       <div className="grid gap-3 rounded-2xl border border-zinc-200 bg-white/90 p-4 shadow-[0_34px_90px_rgba(24,24,27,0.10)] backdrop-blur">
@@ -382,6 +407,7 @@ function IntroPanel({ phase, showProfileVideo }: { phase: number; showProfileVid
       <div className="relative grid gap-3 md:gap-4">
         <ProfileMedia
           showVideo={showProfileVideo}
+          soundRequested={soundRequested}
           frameClassName="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_26px_70px_rgba(0,0,0,0.14)]"
           mediaClassName="aspect-[2.2/1] w-full object-cover object-[50%_28%] md:aspect-[4/5] md:object-center"
         />
