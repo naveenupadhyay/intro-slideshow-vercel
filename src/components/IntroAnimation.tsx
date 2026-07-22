@@ -5,7 +5,8 @@ import gsap from "gsap";
 import { introContent } from "../data/introContent";
 import { CTAButton } from "./CTAButton";
 
-const INTRO_PHASE_MS = 5200;
+const VIDEO_START_DELAY_MS = 3000;
+const VIDEO_VISIBLE_SLIDES_TOTAL_MS = 30000;
 
 const caseStudies = [
   {
@@ -53,6 +54,8 @@ export function IntroAnimation() {
   const current = phases[Math.min(phase, phases.length - 1)];
   const totalSteps = phases.length + 2;
   const activeStep = Math.min(phase, totalSteps - 1);
+  const videoVisibleSteps = linkedinPhase + 1;
+  const autoPhaseMs = VIDEO_VISIBLE_SLIDES_TOTAL_MS / videoVisibleSteps;
 
   const particles = useMemo(
     () =>
@@ -68,7 +71,7 @@ export function IntroAnimation() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setShowProfileVideo(true);
-    }, 3000);
+    }, VIDEO_START_DELAY_MS);
 
     return () => window.clearTimeout(timer);
   }, []);
@@ -90,17 +93,17 @@ export function IntroAnimation() {
       });
     }, rootRef);
 
-    const timers = phases.map((_, index) =>
+    const timers = Array.from({ length: totalSteps - 1 }, (_, index) =>
       window.setTimeout(() => {
-        setPhase((currentPhase) => (currentPhase >= linkedinPhase ? currentPhase : Math.max(currentPhase, index + 1)));
-      }, (index + 1) * INTRO_PHASE_MS)
+        setPhase((currentPhase) => Math.max(currentPhase, index + 1));
+      }, (index + 1) * autoPhaseMs)
     );
 
     return () => {
       timers.forEach(window.clearTimeout);
       ctx.revert();
     };
-  }, [linkedinPhase, phases]);
+  }, [autoPhaseMs, phases, totalSteps]);
 
   const advancePhase = useCallback(() => {
     setPhase((currentPhase) => Math.min(totalSteps - 1, currentPhase + 1));
@@ -244,7 +247,7 @@ export function IntroAnimation() {
               showVideo={showProfileVideo}
               soundRequested={soundRequested}
               frameClassName="mx-auto w-full max-w-[260px] overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_24px_60px_rgba(0,0,0,0.12)] md:mx-0"
-              mediaClassName="aspect-[4/5] w-full object-cover"
+              mediaClassName="mx-auto h-[38dvh] max-h-[360px] w-auto max-w-full object-contain md:aspect-[4/5] md:h-auto md:max-h-none md:w-full md:object-cover"
             />
             <div className="flex flex-col justify-center">
               <div className="mb-4 text-xs font-bold uppercase tracking-[0.26em] text-[#c4511b]">{introContent.brand.founder}</div>
@@ -398,14 +401,14 @@ function ProfileMedia({
 
 function IntroPanel({ showProfileVideo, soundRequested }: { showProfileVideo: boolean; soundRequested: boolean }) {
   return (
-    <div className="relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white/92 p-3 shadow-[0_34px_90px_rgba(24,24,27,0.12)] backdrop-blur md:p-4">
+    <div className="relative order-first min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white/92 p-3 shadow-[0_34px_90px_rgba(24,24,27,0.12)] backdrop-blur md:order-none md:p-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_18%,rgba(194,65,12,0.10),transparent_28%),radial-gradient(circle_at_76%_74%,rgba(250,204,21,0.12),transparent_30%)]" />
       <div className="relative grid gap-3 md:gap-4">
         <ProfileMedia
           showVideo={showProfileVideo}
           soundRequested={soundRequested}
           frameClassName="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_26px_70px_rgba(0,0,0,0.14)]"
-          mediaClassName="aspect-[2.2/1] w-full object-cover object-[50%_28%] md:aspect-[4/5] md:object-center"
+          mediaClassName="mx-auto h-[34dvh] max-h-[300px] w-auto max-w-full object-contain md:aspect-[4/5] md:h-auto md:max-h-none md:w-full md:object-cover md:object-center"
         />
         <div className="rounded-xl border border-zinc-200 bg-white/95 p-3 md:p-4">
           <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4511b]">{introContent.brand.founder}</div>
