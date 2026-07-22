@@ -346,7 +346,7 @@ function IntroPanel({ phase }: { phase: number }) {
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white/95 p-3 md:p-4">
           <div className="text-xs font-bold uppercase tracking-[0.18em] text-[#c4511b]">{introContent.brand.founder}</div>
-          <div className="mt-2 text-lg font-semibold leading-tight text-zinc-950">Founder and CEO</div>
+          <div className="mt-2 text-lg font-semibold leading-tight text-zinc-950">CTO and CPO consultant</div>
           <a className="mt-3 block text-sm font-semibold text-zinc-700 underline decoration-[#c4511b]/40 underline-offset-4" href={`mailto:${introContent.brand.email}`}>
             {introContent.brand.email}
           </a>
