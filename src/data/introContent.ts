@@ -15,7 +15,7 @@ export const introContent = {
   brand: {
     name: "EleventyfirstParallel AI",
     founder: "Naveen Upadhyay",
-    email: "naveen@eleventyfirstparallel.in",
+    email: "naveen.invincible@gmail.com",
     linkedin: "https://www.linkedin.com/in/naveen-u-76612210/",
     portrait: "/nav.jpg"
   },
