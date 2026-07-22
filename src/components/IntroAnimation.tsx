@@ -56,6 +56,9 @@ export function IntroAnimation() {
   const activeStep = Math.min(phase, totalSteps - 1);
   const videoVisibleSteps = linkedinPhase + 1;
   const autoPhaseMs = VIDEO_VISIBLE_SLIDES_TOTAL_MS / videoVisibleSteps;
+  const showProfileVideoNow = useCallback(() => {
+    setShowProfileVideo(true);
+  }, []);
 
   const particles = useMemo(
     () =>
@@ -253,7 +256,7 @@ export function IntroAnimation() {
                 ))}
               </div>
             </div>
-            <IntroPanel showProfileVideo={showProfileVideo} soundRequested={soundRequested} />
+            <IntroPanel showProfileVideo={showProfileVideo} soundRequested={soundRequested} onRequestVideo={showProfileVideoNow} />
             <ProfileInfoCard className="md:hidden" />
           </div>
         ) : finalPhase ? (
@@ -261,6 +264,7 @@ export function IntroAnimation() {
             <ProfileMedia
               showVideo={showProfileVideo}
               soundRequested={soundRequested}
+              onRequestVideo={showProfileVideoNow}
               frameClassName="mx-auto w-full max-w-[260px] overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_24px_60px_rgba(0,0,0,0.12)] md:mx-0"
               mediaClassName="mx-auto h-[38dvh] max-h-[360px] w-auto max-w-full object-contain md:aspect-[4/5] md:h-auto md:max-h-none md:w-full md:object-cover"
             />
@@ -327,17 +331,22 @@ function CaseStudiesSection() {
 function ProfileMedia({
   showVideo,
   soundRequested,
+  onRequestVideo,
   frameClassName,
   mediaClassName
 }: {
   showVideo: boolean;
   soundRequested: boolean;
+  onRequestVideo: () => void;
   frameClassName: string;
   mediaClassName: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [userStartedVideo, setUserStartedVideo] = useState(false);
+  const [soundPreference, setSoundPreference] = useState(soundRequested);
   const [soundEnabled, setSoundEnabled] = useState(soundRequested);
   const [hasEnded, setHasEnded] = useState(false);
+  const videoVisible = showVideo || userStartedVideo;
 
   const playVideo = useCallback(async (withSound: boolean, restart = false) => {
     const video = videoRef.current;
@@ -364,32 +373,57 @@ function ProfileMedia({
   useEffect(() => {
     if (!showVideo) return;
 
-    void playVideo(soundRequested);
-  }, [playVideo, showVideo, soundRequested]);
+    void playVideo(soundPreference || soundRequested);
+  }, [playVideo, showVideo, soundPreference, soundRequested]);
+
+  const requestSound = useCallback(() => {
+    setSoundPreference(true);
+    setSoundEnabled(true);
+
+    if (!showVideo) {
+      setUserStartedVideo(true);
+      onRequestVideo();
+    }
+
+    void playVideo(true);
+  }, [onRequestVideo, playVideo, showVideo]);
 
   return (
     <div className={`${frameClassName} relative`}>
-      {showVideo ? (
+      <>
+        <video
+          ref={videoRef}
+          className={`${mediaClassName} ${videoVisible ? "" : "pointer-events-none absolute inset-0 opacity-0"}`}
+          poster={introContent.brand.portrait}
+          muted={!soundEnabled}
+          playsInline
+          preload="auto"
+          aria-hidden={videoVisible ? undefined : true}
+          aria-label={videoVisible ? `${introContent.brand.founder} intro video` : undefined}
+          onEnded={() => setHasEnded(true)}
+        >
+          <source src={introContent.brand.profileVideo} type="video/mp4" />
+        </video>
+        {!videoVisible ? (
+          <>
+            <img src={introContent.brand.portrait} alt={introContent.brand.founder} className={mediaClassName} />
+            <button
+              type="button"
+              aria-label="Start video with sound"
+              className="absolute bottom-3 left-3 rounded-full border border-white/45 bg-zinc-950/35 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] backdrop-blur transition hover:bg-zinc-950/55 focus:outline-none focus:ring-2 focus:ring-white/80"
+              onClick={requestSound}
+            >
+              Sound on
+            </button>
+          </>
+        ) : (
         <>
-          <video
-            ref={videoRef}
-            className={mediaClassName}
-            poster={introContent.brand.portrait}
-            autoPlay
-            muted={!soundEnabled}
-            playsInline
-            preload="auto"
-            aria-label={`${introContent.brand.founder} intro video`}
-            onEnded={() => setHasEnded(true)}
-          >
-            <source src={introContent.brand.profileVideo} type="video/mp4" />
-          </video>
           {hasEnded ? (
             <button
               type="button"
               aria-label="Play video again"
               className="absolute inset-0 grid place-items-center bg-zinc-950/20 backdrop-blur-[1px] transition hover:bg-zinc-950/30 focus:outline-none focus:ring-2 focus:ring-white/80"
-              onClick={() => void playVideo(soundEnabled || soundRequested, true)}
+              onClick={() => void playVideo(soundEnabled || soundPreference || soundRequested, true)}
             >
               <span className="grid size-16 place-items-center rounded-full border border-white/55 bg-zinc-950/45 shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur md:size-20">
                 <span className="ml-1 h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white md:border-y-[12px] md:border-l-[20px]" />
@@ -402,19 +436,26 @@ function ProfileMedia({
             className={`absolute bottom-3 left-3 rounded-full border border-white/45 bg-zinc-950/35 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] backdrop-blur transition hover:bg-zinc-950/55 focus:outline-none focus:ring-2 focus:ring-white/80 ${
               soundEnabled || hasEnded ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
-            onClick={() => void playVideo(true)}
+            onClick={requestSound}
           >
             Sound on
           </button>
         </>
-      ) : (
-        <img src={introContent.brand.portrait} alt={introContent.brand.founder} className={mediaClassName} />
-      )}
+        )}
+      </>
     </div>
   );
 }
 
-function IntroPanel({ showProfileVideo, soundRequested }: { showProfileVideo: boolean; soundRequested: boolean }) {
+function IntroPanel({
+  showProfileVideo,
+  soundRequested,
+  onRequestVideo
+}: {
+  showProfileVideo: boolean;
+  soundRequested: boolean;
+  onRequestVideo: () => void;
+}) {
   return (
     <div className="relative order-first min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white/92 p-3 shadow-[0_34px_90px_rgba(24,24,27,0.12)] backdrop-blur md:order-none md:p-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_18%,rgba(194,65,12,0.10),transparent_28%),radial-gradient(circle_at_76%_74%,rgba(250,204,21,0.12),transparent_30%)]" />
@@ -422,6 +463,7 @@ function IntroPanel({ showProfileVideo, soundRequested }: { showProfileVideo: bo
         <ProfileMedia
           showVideo={showProfileVideo}
           soundRequested={soundRequested}
+          onRequestVideo={onRequestVideo}
           frameClassName="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-[0_26px_70px_rgba(0,0,0,0.14)]"
           mediaClassName="mx-auto h-[34dvh] max-h-[300px] w-auto max-w-full object-contain md:aspect-[4/5] md:h-auto md:max-h-none md:w-full md:object-cover md:object-center"
         />
