@@ -7,6 +7,10 @@ import { CTAButton } from "./CTAButton";
 
 const VIDEO_START_DELAY_MS = 3000;
 const VIDEO_VISIBLE_SLIDES_TOTAL_MS = 40000;
+const MOBILE_GESTURE_QUERY = "(max-width: 767px)";
+
+const isMobileViewport = () =>
+  typeof window !== "undefined" && window.matchMedia(MOBILE_GESTURE_QUERY).matches;
 
 const caseStudies = [
   {
@@ -136,6 +140,7 @@ export function IntroAnimation() {
 
   const onWheel = useCallback(
     (event: WheelEvent<HTMLDivElement>) => {
+      if (isMobileViewport()) return;
       if (Math.abs(event.deltaY) < 36) return;
       navigateByGesture(event.deltaY > 0 ? "next" : "previous");
     },
@@ -143,11 +148,16 @@ export function IntroAnimation() {
   );
 
   const onTouchStart = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    if (isMobileViewport()) return;
     touchStartY.current = event.touches[0]?.clientY ?? null;
   }, []);
 
   const onTouchEnd = useCallback(
     (event: TouchEvent<HTMLDivElement>) => {
+      if (isMobileViewport()) {
+        touchStartY.current = null;
+        return;
+      }
       if (touchStartY.current === null) return;
 
       const diff = touchStartY.current - event.changedTouches[0].clientY;
