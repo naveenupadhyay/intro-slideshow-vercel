@@ -318,38 +318,59 @@ function ProfileMedia({
   mediaClassName: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [soundEnabled, setSoundEnabled] = useState(soundRequested);
+
+  const playVideo = useCallback(async (withSound: boolean) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = !withSound;
+    video.volume = 1;
+
+    try {
+      await video.play();
+      setSoundEnabled(withSound && !video.muted);
+    } catch {
+      video.muted = true;
+      setSoundEnabled(false);
+      void video.play().catch(() => undefined);
+    }
+  }, []);
 
   useEffect(() => {
     if (!showVideo) return;
 
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.muted = !soundRequested;
-    const playback = video.play();
-    void playback.catch(() => {
-      video.muted = true;
-      void video.play().catch(() => undefined);
-    });
-  }, [showVideo, soundRequested]);
+    void playVideo(soundRequested);
+  }, [playVideo, showVideo, soundRequested]);
 
   return (
-    <div className={frameClassName}>
+    <div className={`${frameClassName} relative`}>
       {showVideo ? (
-        <video
-          ref={videoRef}
-          className={mediaClassName}
-          poster={introContent.brand.portrait}
-          autoPlay
-          muted={!soundRequested}
-          controls={soundRequested}
-          loop
-          playsInline
-          preload="auto"
-          aria-label={`${introContent.brand.founder} intro video`}
-        >
-          <source src={introContent.brand.profileVideo} type="video/mp4" />
-        </video>
+        <>
+          <video
+            ref={videoRef}
+            className={mediaClassName}
+            poster={introContent.brand.portrait}
+            autoPlay
+            muted={!soundEnabled}
+            loop
+            playsInline
+            preload="auto"
+            aria-label={`${introContent.brand.founder} intro video`}
+          >
+            <source src={introContent.brand.profileVideo} type="video/mp4" />
+          </video>
+          <button
+            type="button"
+            aria-label="Turn sound on"
+            className={`absolute bottom-3 left-3 rounded-full border border-white/45 bg-zinc-950/35 px-3 py-1.5 text-xs font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] backdrop-blur transition hover:bg-zinc-950/55 focus:outline-none focus:ring-2 focus:ring-white/80 ${
+              soundEnabled ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}
+            onClick={() => void playVideo(true)}
+          >
+            Sound on
+          </button>
+        </>
       ) : (
         <img src={introContent.brand.portrait} alt={introContent.brand.founder} className={mediaClassName} />
       )}
