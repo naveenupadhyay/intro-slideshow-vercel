@@ -93,17 +93,20 @@ export function IntroAnimation() {
       });
     }, rootRef);
 
-    const timers = Array.from({ length: totalSteps - 1 }, (_, index) =>
-      window.setTimeout(() => {
-        setPhase((currentPhase) => Math.max(currentPhase, index + 1));
-      }, (index + 1) * autoPhaseMs)
-    );
-
     return () => {
-      timers.forEach(window.clearTimeout);
       ctx.revert();
     };
-  }, [autoPhaseMs, phases, totalSteps]);
+  }, []);
+
+  useEffect(() => {
+    if (phase >= totalSteps - 1) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setPhase((currentPhase) => Math.min(totalSteps - 1, currentPhase + 1));
+    }, autoPhaseMs);
+
+    return () => window.clearTimeout(timer);
+  }, [autoPhaseMs, phase, totalSteps]);
 
   const advancePhase = useCallback(() => {
     setPhase((currentPhase) => Math.min(totalSteps - 1, currentPhase + 1));
@@ -163,29 +166,40 @@ export function IntroAnimation() {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      <ol
-        className="absolute left-4 top-4 z-30 flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white/80 p-1 shadow-[0_14px_40px_rgba(0,0,0,0.08)] backdrop-blur md:left-8 md:top-6"
+      <div
+        className="absolute left-4 top-4 z-30 rounded-lg border border-zinc-200 bg-white/80 p-1 shadow-[0_14px_40px_rgba(0,0,0,0.08)] backdrop-blur md:left-8 md:top-6"
         aria-label="Intro progress"
       >
-        {Array.from({ length: totalSteps }, (_, index) => {
-          const isActive = activeStep === index;
-          return (
-            <li key={index}>
-              <button
-                type="button"
-                aria-current={isActive ? "step" : undefined}
-                aria-label={`Go to slide ${index + 1} of ${totalSteps}`}
-                className={`grid size-7 place-items-center rounded-md text-xs font-semibold tabular-nums transition ${
-                  isActive ? "bg-zinc-950 text-white shadow-[0_8px_24px_rgba(0,0,0,0.16)]" : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950"
-                }`}
-                onClick={() => setPhase(index)}
-              >
-                {index + 1}
-              </button>
-            </li>
-          );
-        })}
-      </ol>
+        <ol className="flex items-center gap-1.5">
+          {Array.from({ length: totalSteps }, (_, index) => {
+            const isActive = activeStep === index;
+            return (
+              <li key={index}>
+                <button
+                  type="button"
+                  aria-current={isActive ? "step" : undefined}
+                  aria-label={`Go to slide ${index + 1} of ${totalSteps}`}
+                  className={`grid size-7 place-items-center rounded-md text-xs font-semibold tabular-nums transition ${
+                    isActive ? "bg-zinc-950 text-white shadow-[0_8px_24px_rgba(0,0,0,0.16)]" : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950"
+                  }`}
+                  onClick={() => setPhase(index)}
+                >
+                  {index + 1}
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+        <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-zinc-200/90" aria-hidden="true">
+          <motion.div
+            key={`slide-progress-${activeStep}`}
+            className="h-full w-full origin-left rounded-full bg-[#c4511b]"
+            initial={{ scaleX: activeStep === totalSteps - 1 ? 1 : 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: activeStep === totalSteps - 1 ? 0 : autoPhaseMs / 1000, ease: "linear" }}
+          />
+        </div>
+      </div>
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(194,65,12,0.10),transparent_30%),radial-gradient(circle_at_78%_22%,rgba(250,204,21,0.12),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(244,244,245,0.58))]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(24,24,27,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(24,24,27,0.035)_1px,transparent_1px)] bg-[size:86px_86px] opacity-60" />
