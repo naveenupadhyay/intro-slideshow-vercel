@@ -401,6 +401,15 @@ function ProfileMedia({
   return (
     <div className={`${frameClassName} relative`}>
       <>
+        <a
+          href={introContent.brand.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Open Naveen Upadhyay on LinkedIn"
+          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-full border border-white/55 bg-[#0a66c2]/90 text-base font-bold leading-none text-white shadow-[0_12px_30px_rgba(0,0,0,0.22)] backdrop-blur transition hover:bg-[#0a66c2] focus:outline-none focus:ring-2 focus:ring-white/85"
+        >
+          in
+        </a>
         <video
           ref={videoRef}
           className={`${mediaClassName} ${videoVisible ? "" : "pointer-events-none absolute inset-0 opacity-0"}`}
