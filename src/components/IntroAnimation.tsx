@@ -17,9 +17,16 @@ const isMobileViewport = () =>
 const caseStudies = [
   {
     domain: "Engineering",
-    title: "AI-Native Engineering Operating System",
+    title: "ForgeOS - AI-native product development platform",
     summary: "A context and control layer that orchestrates coding agents, repo knowledge, tools, tests, evals, and human review.",
     outcomes: ["Higher leverage per engineer", "Faster idea-to-release cycles", "Safer AI adoption"],
+    videoSrc: ""
+  },
+  {
+    domain: "Education",
+    title: "Education AI",
+    summary: "AI fluency and learning workflows for schools and teams, built around real educator and learner needs.",
+    outcomes: ["Human-centered AI adoption", "Faster feedback loops", "Less educator prep time"],
     videoSrc: ""
   },
   {
@@ -45,16 +52,9 @@ const caseStudies = [
   },
   {
     domain: "Customer care",
-    title: "Customer Care",
+    title: "Customer Care with AI",
     summary: "Conversational AI for regulated customer support, including a Dubai government entity use case.",
     outcomes: ["Shorter response times", "Controlled escalation paths", "Better QA visibility"],
-    videoSrc: ""
-  },
-  {
-    domain: "Education",
-    title: "Education + AI",
-    summary: "AI fluency and learning workflows for schools and teams, built around real educator and learner needs.",
-    outcomes: ["Human-centered AI adoption", "Faster feedback loops", "Less educator prep time"],
     videoSrc: ""
   }
 ];
