@@ -17,9 +17,24 @@ const isMobileViewport = () =>
 const caseStudies = [
   {
     domain: "Engineering",
-    title: "ForgeOS - AI-native product development platform",
-    summary: "A context and control layer that orchestrates coding agents, repo knowledge, tools, tests, evals, and human review.",
-    outcomes: ["Higher leverage per engineer", "Faster idea-to-release cycles", "Safer AI adoption"],
+    title: "ForgeOS — Human-Led, AI-Powered Engineering",
+    summary:
+      "An AI-native engineering operating system that brings together experienced developers and specialized AI agents to transform requirements into production-grade software—with built-in context, orchestration, testing, and human oversight.",
+    capabilities: [
+      {
+        title: "Multi-Agent Orchestration",
+        description: "Specialized planning, coding, testing, and code-review agents collaborate throughout the engineering lifecycle."
+      },
+      {
+        title: "Unified Context & Control",
+        description: "A centralized layer connecting repository knowledge, development tools, coding agents, automated tests, evaluations, and human approvals."
+      },
+      {
+        title: "Human-in-the-Loop Engineering",
+        description: "Developers refine requirements, validate architecture, review AI-generated code, and control production releases."
+      }
+    ],
+    outcomes: ["Higher Engineering Leverage", "Faster Idea-to-Production", "Production-Grade Quality"],
     videoSrc: ""
   },
   {
@@ -455,6 +470,16 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
                 <div className="grid">
                   <div className={`col-start-1 row-start-1 flex flex-col gap-5 transition-opacity duration-200 ${mode === "text" ? "visible opacity-100" : "invisible opacity-0"}`}>
                     <p className="m-0 max-w-[62ch] text-pretty text-[17px] leading-[1.6] text-[#cfcfcf]">{study.summary}</p>
+                    {"capabilities" in study && study.capabilities ? (
+                      <div className="grid gap-3 md:grid-cols-3">
+                        {study.capabilities.map((capability) => (
+                          <div key={capability.title} className="rounded-2xl border border-[#3a3a3a] bg-black/20 p-4">
+                            <h4 className="m-0 text-sm font-semibold leading-snug text-white">{capability.title}</h4>
+                            <p className="mt-2 text-sm leading-6 text-[#a3a3a3]">{capability.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                     <div className="flex flex-col gap-3">
                       <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#a3a3a3]">Outcomes</span>
                       <div className="flex flex-wrap gap-2">
