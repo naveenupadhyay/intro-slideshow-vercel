@@ -40,37 +40,116 @@ const caseStudies = [
   },
   {
     domain: "Education",
-    title: "Education AI",
-    summary: "AI fluency and learning workflows for schools and teams, built around real educator and learner needs.",
-    outcomes: ["Human-centered AI adoption", "Faster feedback loops", "Less educator prep time"],
+    title: "Education AI — Intelligent Learning Platforms",
+    summary:
+      "AI-powered education systems that personalize learning, support educators, and automate academic workflows. Combining conversational AI, adaptive learning, intelligent assessments, and learning analytics to create scalable, engaging educational experiences.",
+    capabilities: [
+      {
+        title: "AI Tutors & Personalized Learning",
+        description:
+          "Conversational AI tutors that adapt explanations, difficulty levels, and learning paths to individual students, providing contextual guidance and feedback."
+      },
+      {
+        title: "Intelligent Assessments & Analytics",
+        description: "AI-driven assessments, automated evaluation, learning-gap identification, and personalized recommendations to support student progress."
+      },
+      {
+        title: "Academic Workflow Automation",
+        description: "AI agents supporting curriculum development, lesson planning, content generation, student engagement, and institutional workflows."
+      }
+    ],
+    outcomes: ["Personalized Learning at Scale", "Higher Educator Productivity", "Intelligent Learning Experiences"],
     videoSrc: ""
   },
   {
     domain: "Finance",
-    title: "Finance and Accounting",
-    summary: "Audit automation for public and private filings, financial reconciliation, and evidence workflows.",
-    outcomes: ["Faster audit preparation", "Stronger evidence traceability", "Lower manual reconciliation effort"],
+    title: "Finance & Accounting — Intelligent Financial Operations",
+    summary:
+      "AI-native financial systems that automate complex accounting workflows, streamline financial operations, and transform financial data into actionable insights. Combining intelligent document processing, reconciliation, financial analysis, and human-controlled automation.",
+    capabilities: [
+      {
+        title: "Intelligent Document Processing",
+        description: "AI agents that extract, classify, validate, and process invoices, purchase orders, receipts, bank statements, and other financial documents."
+      },
+      {
+        title: "Accounting & Reconciliation Automation",
+        description: "Intelligent transaction matching, account reconciliation, exception detection, journal-entry preparation, and integration with ERP and accounting systems."
+      },
+      {
+        title: "Financial Intelligence & Compliance",
+        description: "AI-powered anomaly detection, financial reporting, cash-flow insights, compliance monitoring, and human approval workflows."
+      }
+    ],
+    outcomes: ["Reduced Manual Processing", "Faster Financial Operations", "Stronger Financial Controls"],
     videoSrc: ""
   },
   {
     domain: "Legal",
-    title: "Legal",
-    summary: "Contract negotiation at scale and ADR workflows combining LLMs, ML models, and decision-tree logic.",
-    outcomes: ["Faster contract review cycles", "Consistent negotiation positions", "Structured ADR support"],
+    title: "Legal AI — Intelligent Legal Workflows",
+    summary:
+      "AI-powered legal systems that accelerate document analysis, contract review, legal research, and compliance workflows. Combining intelligent document processing, contextual search, and agentic automation while keeping legal professionals in control of critical decisions.",
+    capabilities: [
+      {
+        title: "Contract Intelligence & Review",
+        description:
+          "AI agents that analyze contracts, identify key clauses, highlight potential risks, compare versions, and suggest revisions based on legal and commercial guidelines."
+      },
+      {
+        title: "Legal Research & Knowledge Intelligence",
+        description: "Context-aware search and analysis across legal documents, policies, case materials, and knowledge repositories, with source references and structured insights."
+      },
+      {
+        title: "Legal Workflow Automation",
+        description: "AI-assisted document drafting, contract lifecycle management, obligation tracking, compliance monitoring, and approval workflows."
+      }
+    ],
+    outcomes: ["Faster Document Reviews", "Reduced Administrative Work", "Better Legal Visibility"],
     videoSrc: ""
   },
   {
     domain: "Sales",
-    title: "Sales Outreach",
-    summary: "Voice-agent driven sales outreach that calls customers, qualifies intent, and routes follow-up actions.",
-    outcomes: ["Higher outreach capacity", "Cleaner intent capture", "Faster follow-up cycles"],
+    title: "Sales Outreach — AI-Powered Revenue Intelligence",
+    summary:
+      "Intelligent sales systems that combine prospect research, lead qualification, personalized outreach, and sales workflow automation. AI agents help identify relevant opportunities, generate contextual engagement, and streamline sales operations.",
+    capabilities: [
+      {
+        title: "Intelligent Prospect Discovery",
+        description: "AI-powered prospect identification, account research, lead enrichment, and qualification based on ideal customer profiles and business signals."
+      },
+      {
+        title: "Personalized Outreach Automation",
+        description: "AI agents that generate contextual email sequences, personalized messaging, follow-up recommendations, and multichannel engagement workflows."
+      },
+      {
+        title: "Sales Intelligence & CRM Automation",
+        description: "Automated lead prioritization, CRM updates, meeting preparation, pipeline analysis, and actionable sales recommendations."
+      }
+    ],
+    outcomes: ["Faster Prospect Discovery", "More Relevant Engagement", "Higher Sales Productivity"],
     videoSrc: ""
   },
   {
     domain: "Customer care",
-    title: "Customer Care with AI",
-    summary: "Conversational AI for regulated customer support, including a Dubai government entity use case.",
-    outcomes: ["Shorter response times", "Controlled escalation paths", "Better QA visibility"],
+    title: "Customer Care — AI-Powered Customer Experience",
+    summary:
+      "Intelligent customer service systems that combine conversational AI, business process automation, and human-agent collaboration to deliver scalable, context-aware customer experiences across multiple communication channels.",
+    capabilities: [
+      {
+        title: "Conversational AI Support",
+        description:
+          "AI-powered chat, voice, email, and messaging agents that understand customer requests, retrieve relevant knowledge, and provide contextual, multilingual support."
+      },
+      {
+        title: "Automated Service Workflows",
+        description:
+          "AI agents that retrieve order information, check account status, create service requests, update tickets, and execute authorized actions through connected enterprise systems."
+      },
+      {
+        title: "Human-Agent Collaboration & Quality",
+        description: "Intelligent escalation to human representatives with complete conversation context, AI-assisted response suggestions, quality evaluations, and service analytics."
+      }
+    ],
+    outcomes: ["Faster Customer Resolution", "Scalable Customer Support", "Better Customer Experiences"],
     videoSrc: ""
   }
 ];
