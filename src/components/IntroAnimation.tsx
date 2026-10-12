@@ -365,7 +365,7 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
             <ReadWatchSwitch allText={allText} allVideo={allVideo} onRead={() => setAll("text")} onWatch={() => setAll("video")} />
           </div>
 
-          <nav className="flex flex-col gap-0.5 border-t border-[#333] pt-4" aria-label="Case study index">
+          <nav className="hidden flex-col gap-0.5 border-t border-[#333] pt-4 md:flex" aria-label="Case study index">
             {caseStudies.map((study, index) => (
               <button
                 key={study.title}
@@ -381,7 +381,7 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
 
           <button
             type="button"
-            className="flex items-center gap-2 self-start p-0 text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#a3a3a3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="hidden items-center gap-2 self-start p-0 text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#a3a3a3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:flex"
             onClick={() => toggleFocus(true)}
           >
             Focus on cards
