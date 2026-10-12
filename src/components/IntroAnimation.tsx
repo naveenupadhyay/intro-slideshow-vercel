@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { TouchEvent, WheelEvent } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import { ArrowLeft, ArrowRight, Check, FileText, Play, Video } from "lucide-react";
 import { introContent } from "../data/introContent";
 import { CTAButton } from "./CTAButton";
 
@@ -14,31 +15,50 @@ const isMobileViewport = () =>
 
 const caseStudies = [
   {
+    domain: "Engineering",
     title: "AI-Native Engineering Operating System",
     summary: "A context and control layer that orchestrates coding agents, repo knowledge, tools, tests, evals, and human review.",
-    outcomes: ["Higher leverage per engineer", "Faster idea-to-release cycles", "Safer AI adoption"]
+    outcomes: ["Higher leverage per engineer", "Faster idea-to-release cycles", "Safer AI adoption"],
+    videoSrc: ""
   },
   {
+    domain: "Finance",
     title: "Finance and Accounting",
     summary: "Audit automation for public and private filings, financial reconciliation, and evidence workflows.",
-    outcomes: ["Faster audit preparation", "Stronger evidence traceability", "Lower manual reconciliation effort"]
+    outcomes: ["Faster audit preparation", "Stronger evidence traceability", "Lower manual reconciliation effort"],
+    videoSrc: ""
   },
   {
+    domain: "Legal",
     title: "Legal",
     summary: "Contract negotiation at scale and ADR workflows combining LLMs, ML models, and decision-tree logic.",
-    outcomes: ["Faster contract review cycles", "Consistent negotiation positions", "Structured ADR support"]
+    outcomes: ["Faster contract review cycles", "Consistent negotiation positions", "Structured ADR support"],
+    videoSrc: ""
   },
   {
+    domain: "Sales",
     title: "Sales Outreach",
     summary: "Voice-agent driven sales outreach that calls customers, qualifies intent, and routes follow-up actions.",
-    outcomes: ["Higher outreach capacity", "Cleaner intent capture", "Faster follow-up cycles"]
+    outcomes: ["Higher outreach capacity", "Cleaner intent capture", "Faster follow-up cycles"],
+    videoSrc: ""
   },
   {
+    domain: "Customer care",
     title: "Customer Care",
     summary: "Conversational AI for regulated customer support, including a Dubai government entity use case.",
-    outcomes: ["Shorter response times", "Controlled escalation paths", "Better QA visibility"]
+    outcomes: ["Shorter response times", "Controlled escalation paths", "Better QA visibility"],
+    videoSrc: ""
+  },
+  {
+    domain: "Education",
+    title: "Education + AI",
+    summary: "AI fluency and learning workflows for schools and teams, built around real educator and learner needs.",
+    outcomes: ["Human-centered AI adoption", "Faster feedback loops", "Less educator prep time"],
+    videoSrc: ""
   }
 ];
+
+type CaseStudyMode = "text" | "video";
 
 export function IntroAnimation() {
   const [phase, setPhase] = useState(0);
@@ -236,7 +256,9 @@ export function IntroAnimation() {
       </div>
 
       <motion.div
-        className="relative z-10 mx-auto max-h-[calc(100dvh-4.5rem)] w-full min-w-0 max-w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain py-2 md:max-h-[calc(100dvh-4rem)] md:max-w-6xl"
+        className={`relative z-10 mx-auto max-h-[calc(100dvh-4.5rem)] w-full min-w-0 max-w-[calc(100vw-2rem)] overflow-y-auto overscroll-contain py-2 md:max-h-[calc(100dvh-4rem)] ${
+          caseStudiesActive ? "md:max-w-[1320px]" : "md:max-w-6xl"
+        }`}
         data-testid="intro-stage"
         key={caseStudiesActive ? "case-studies" : finalPhase ? "final" : "intro"}
         initial={{ opacity: 0, y: 28, filter: "blur(12px)" }}
@@ -298,43 +320,224 @@ export function IntroAnimation() {
 }
 
 function CaseStudiesSection() {
-  return (
-    <section className="mx-auto max-w-6xl rounded-2xl border border-zinc-200 bg-white/95 p-5 shadow-[0_38px_120px_rgba(24,24,27,0.14)] backdrop-blur md:p-7">
-      <div className="grid gap-4 md:grid-cols-[0.78fr_1.22fr] md:items-start">
-        <div>
-          <div className="text-sm font-bold uppercase tracking-[0.16em] text-[#c4511b] sm:text-base">Case studies</div>
-          <h1 className="mt-4 text-3xl font-semibold leading-[0.98] tracking-[-0.02em] text-zinc-950 sm:text-4xl lg:text-5xl">
-            Case studies I oversaw with a dedicated engineering and product org.
-          </h1>
-          <p className="mt-5 text-base leading-7 text-zinc-700 md:text-lg">
-            Practical examples from AI product engineering work across engineering, finance, legal, sales, and customer care, overseen by me with a focused engineering and product organization.
-          </p>
-        </div>
+  const sectionRef = useRef<HTMLElement>(null);
+  const [modes, setModes] = useState<Record<number, CaseStudyMode>>({});
+  const [focusMode, setFocusMode] = useState(false);
+  const resolvedModes = caseStudies.map((_, index) => modes[index] ?? "text");
+  const allText = resolvedModes.every((mode) => mode === "text");
+  const allVideo = resolvedModes.every((mode) => mode === "video");
 
-        <div className="grid gap-3 md:grid-cols-2">
-          {caseStudies.map((study, index) => (
-            <article key={study.title} className="rounded-xl border border-zinc-200 bg-zinc-50/95 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#c4511b]">Case {index + 1}</span>
-                <span className="rounded-md bg-white px-2 py-1 text-xs font-semibold tabular-nums text-zinc-500">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              </div>
-              <h2 className="mt-3 text-lg font-semibold leading-tight text-zinc-950">{study.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-zinc-700">{study.summary}</p>
-              <ul className="mt-3 grid gap-1.5">
-                {study.outcomes.map((outcome) => (
-                  <li key={outcome} className="flex gap-2 text-sm leading-5 text-zinc-700">
-                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-[#c4511b]" />
-                    <span>{outcome}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
+  const setAll = (mode: CaseStudyMode) => {
+    setModes(Object.fromEntries(caseStudies.map((_, index) => [index, mode])));
+  };
+
+  const setMode = (index: number, mode: CaseStudyMode) => {
+    setModes((currentModes) => ({ ...currentModes, [index]: mode }));
+  };
+
+  const jumpToCase = (index: number) => {
+    document.getElementById(`case-${index + 1}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const toggleFocus = (nextFocusMode: boolean) => {
+    setFocusMode(nextFocusMode);
+    window.setTimeout(() => {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`mx-auto flex max-w-[1320px] flex-wrap items-start gap-[clamp(32px,5vw,72px)] bg-black px-[clamp(20px,4vw,56px)] font-sans text-white ${
+        focusMode ? "pb-[clamp(32px,6vw,88px)] pt-[clamp(72px,6vw,88px)]" : "py-[clamp(32px,6vw,88px)]"
+      }`}
+    >
+      {!focusMode ? (
+        <aside className="flex flex-[1_1_320px] flex-col gap-7 md:sticky md:top-8 md:max-w-[440px]">
+          <h2 className="m-0 text-balance text-[clamp(36px,4.2vw,56px)] font-bold leading-[1.04] tracking-[-0.04em]">
+            Case studies of AI work done under my leadership.
+          </h2>
+
+          <div className="flex flex-col gap-2.5">
+            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#a3a3a3]">View all as</span>
+            <ReadWatchSwitch allText={allText} allVideo={allVideo} onRead={() => setAll("text")} onWatch={() => setAll("video")} />
+          </div>
+
+          <nav className="flex flex-col gap-0.5 border-t border-[#333] pt-4" aria-label="Case study index">
+            {caseStudies.map((study, index) => (
+              <button
+                key={study.title}
+                type="button"
+                className="-ml-3.5 flex items-baseline gap-3.5 rounded-full px-3.5 py-2.5 text-left text-base font-medium text-white transition hover:bg-[#1c1c1c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                onClick={() => jumpToCase(index)}
+              >
+                <span className="text-xs font-semibold tabular-nums text-[#a3a3a3]">{String(index + 1).padStart(2, "0")}</span>
+                <span>{study.title}</span>
+              </button>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            className="flex items-center gap-2 self-start p-0 text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#a3a3a3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            onClick={() => toggleFocus(true)}
+          >
+            Focus on cards
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </aside>
+      ) : null}
+
+      <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-6">
+        {focusMode ? (
+          <div className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-4 border-b border-[#333] bg-black py-3">
+            <button
+              type="button"
+              className="flex items-center gap-2 p-0 text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#a3a3a3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              onClick={() => toggleFocus(false)}
+            >
+              <ArrowLeft size={16} aria-hidden="true" />
+              Show intro
+            </button>
+            <ReadWatchSwitch allText={allText} allVideo={allVideo} compact onRead={() => setAll("text")} onWatch={() => setAll("video")} />
+          </div>
+        ) : null}
+
+        <div
+          className="grid gap-5"
+          style={{ gridTemplateColumns: `repeat(auto-fill, minmax(min(100%, ${focusMode ? "420px" : "100%"}), 1fr))` }}
+        >
+          {caseStudies.map((study, index) => {
+            const mode = resolvedModes[index];
+            const number = String(index + 1).padStart(2, "0");
+
+            return (
+              <article id={`case-${index + 1}`} key={study.title} className="flex scroll-mt-6 flex-col gap-5 rounded-2xl bg-[#1c1c1c] p-[clamp(22px,2.6vw,32px)]">
+                <header className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="flex min-w-0 flex-[1_1_220px] flex-col gap-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-[13px] font-semibold tabular-nums text-[#a3a3a3]">{number}</span>
+                      <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#a3a3a3]">{study.domain}</span>
+                    </div>
+                    <h3 className="m-0 text-balance text-[clamp(23px,2.2vw,28px)] font-bold leading-[1.15] tracking-[-0.025em] text-white">
+                      {study.title}
+                    </h3>
+                  </div>
+
+                  <div role="tablist" aria-label={`${study.title} view`} className="inline-flex shrink-0 gap-0.5 rounded-full bg-[#2e2e2e] p-1">
+                    <CaseTab active={mode === "text"} label="Overview" onClick={() => setMode(index, "text")} />
+                    <CaseTab active={mode === "video"} label="Video explainer" icon={<Play size={14} fill="currentColor" strokeWidth={0} />} onClick={() => setMode(index, "video")} />
+                  </div>
+                </header>
+
+                <div className="grid">
+                  <div className={`col-start-1 row-start-1 flex flex-col gap-5 transition-opacity duration-200 ${mode === "text" ? "visible opacity-100" : "invisible opacity-0"}`}>
+                    <p className="m-0 max-w-[62ch] text-pretty text-[17px] leading-[1.6] text-[#cfcfcf]">{study.summary}</p>
+                    <div className="flex flex-col gap-3">
+                      <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#a3a3a3]">Outcomes</span>
+                      <div className="flex flex-wrap gap-2">
+                        {study.outcomes.map((outcome) => (
+                          <span key={outcome} className="inline-flex items-center gap-2 rounded-full border border-[#3a3a3a] py-2 pl-2.5 pr-3.5 text-sm font-medium text-white">
+                            <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+                            {outcome}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={`col-start-1 row-start-1 flex flex-col gap-3 transition-opacity duration-200 ${mode === "video" ? "visible opacity-100" : "invisible opacity-0"}`}>
+                    {study.videoSrc ? (
+                      <video src={study.videoSrc} controls preload="metadata" className="block aspect-video w-full rounded-2xl bg-black" />
+                    ) : (
+                      <div className="relative flex aspect-video w-full flex-col justify-between overflow-hidden rounded-2xl bg-black p-5 text-white">
+                        <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#a3a3a3]">{number} · Explainer</span>
+                        <div className="flex flex-1 items-center justify-center">
+                          <div className="flex size-16 items-center justify-center rounded-full bg-white text-black">
+                            <Play size={24} fill="currentColor" strokeWidth={0} aria-hidden="true" />
+                          </div>
+                        </div>
+                        <div className="flex items-end justify-between gap-3">
+                          <span className="max-w-[70%] text-base font-semibold leading-snug">{study.title}</span>
+                          <span className="text-xs text-[#a3a3a3]">Video coming soon</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
+  );
+}
+
+function ReadWatchSwitch({
+  allText,
+  allVideo,
+  compact = false,
+  onRead,
+  onWatch
+}: {
+  allText: boolean;
+  allVideo: boolean;
+  compact?: boolean;
+  onRead: () => void;
+  onWatch: () => void;
+}) {
+  return (
+    <div className="inline-flex self-start rounded-full border border-[#333] p-1">
+      <button
+        type="button"
+        className={`flex items-center gap-2 rounded-full text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+          compact ? "px-4 py-2" : "px-[18px] py-2.5"
+        } ${allText ? "bg-white text-black" : "bg-transparent text-[#bdbdbd] hover:text-white"}`}
+        onClick={onRead}
+      >
+        <FileText size={16} aria-hidden="true" />
+        Read
+      </button>
+      <button
+        type="button"
+        className={`flex items-center gap-2 rounded-full text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+          compact ? "px-4 py-2" : "px-[18px] py-2.5"
+        } ${allVideo ? "bg-white text-black" : "bg-transparent text-[#bdbdbd] hover:text-white"}`}
+        onClick={onWatch}
+      >
+        <Video size={16} aria-hidden="true" />
+        Watch
+      </button>
+    </div>
+  );
+}
+
+function CaseTab({
+  active,
+  label,
+  icon,
+  onClick
+}: {
+  active: boolean;
+  label: string;
+  icon?: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+        active ? "bg-white text-black" : "bg-transparent text-[#bdbdbd] hover:text-white"
+      }`}
+      onClick={onClick}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
 
