@@ -9,6 +9,7 @@ import { CTAButton } from "./CTAButton";
 const VIDEO_START_DELAY_MS = 3000;
 const VIDEO_VISIBLE_SLIDES_TOTAL_MS = 40000;
 const MOBILE_GESTURE_QUERY = "(max-width: 767px)";
+const CASE_STUDIES_URL = "https://www.naveenupadhyay.com/case-studies";
 
 const isMobileViewport = () =>
   typeof window !== "undefined" && window.matchMedia(MOBILE_GESTURE_QUERY).matches;
@@ -386,6 +387,13 @@ function CaseStudiesSection() {
             Focus on cards
             <ArrowRight size={16} aria-hidden="true" />
           </button>
+          <a
+            href={CASE_STUDIES_URL}
+            className="flex items-center gap-2 self-start text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#a3a3a3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Full case studies
+            <ArrowRight size={16} aria-hidden="true" />
+          </a>
         </aside>
       ) : null}
 
@@ -400,7 +408,16 @@ function CaseStudiesSection() {
               <ArrowLeft size={16} aria-hidden="true" />
               Show intro
             </button>
-            <ReadWatchSwitch allText={allText} allVideo={allVideo} compact onRead={() => setAll("text")} onWatch={() => setAll("video")} />
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={CASE_STUDIES_URL}
+                className="flex items-center gap-2 text-[15px] font-semibold text-white underline underline-offset-4 transition hover:text-[#a3a3a3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                Full case studies
+                <ArrowRight size={16} aria-hidden="true" />
+              </a>
+              <ReadWatchSwitch allText={allText} allVideo={allVideo} compact onRead={() => setAll("text")} onWatch={() => setAll("video")} />
+            </div>
           </div>
         ) : null}
 
