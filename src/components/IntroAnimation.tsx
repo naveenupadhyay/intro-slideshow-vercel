@@ -35,6 +35,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Higher Engineering Leverage", "Faster Idea-to-Production", "Production-Grade Quality"],
+    youtubeEmbedUrl: "https://www.youtube.com/embed/T6-zwdcmdOs",
     videoSrc: ""
   },
   {
@@ -494,7 +495,15 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
                   </div>
 
                   <div className={`col-start-1 row-start-1 flex flex-col gap-3 transition-opacity duration-200 ${mode === "video" ? "visible opacity-100" : "invisible opacity-0"}`}>
-                    {study.videoSrc ? (
+                    {"youtubeEmbedUrl" in study && study.youtubeEmbedUrl ? (
+                      <iframe
+                        className="block aspect-video w-full rounded-2xl bg-black"
+                        src={study.youtubeEmbedUrl}
+                        title={`${study.title} video explainer`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : study.videoSrc ? (
                       <video src={study.videoSrc} controls preload="metadata" className="block aspect-video w-full rounded-2xl bg-black" />
                     ) : (
                       <div className="relative flex aspect-video w-full flex-col justify-between overflow-hidden rounded-2xl bg-black p-5 text-white">
