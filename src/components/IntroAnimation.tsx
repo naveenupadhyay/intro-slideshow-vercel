@@ -35,7 +35,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Higher Engineering Leverage", "Faster Idea-to-Production", "Production-Grade Quality"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/T6-zwdcmdOs",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/T6-zwdcmdOs?vq=hd720&hd=1",
     videoSrc: ""
   },
   {
@@ -59,7 +59,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Personalized Learning at Scale", "Higher Educator Productivity", "Intelligent Learning Experiences"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/aDXsjcSA3t8",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/aDXsjcSA3t8?vq=hd720&hd=1",
     videoSrc: ""
   },
   {
