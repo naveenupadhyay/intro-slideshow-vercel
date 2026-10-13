@@ -82,6 +82,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Reduced Manual Processing", "Faster Financial Operations", "Stronger Financial Controls"],
+    youtubeEmbedUrl: "https://www.youtube.com/embed/Drj5GE8IVx0?vq=hd720&hd=1",
     videoSrc: ""
   },
   {
