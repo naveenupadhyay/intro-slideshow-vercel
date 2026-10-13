@@ -59,7 +59,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Personalized Learning at Scale", "Higher Educator Productivity", "Intelligent Learning Experiences"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/c7uWVvIBCj4",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/aDXsjcSA3t8",
     videoSrc: ""
   },
   {
