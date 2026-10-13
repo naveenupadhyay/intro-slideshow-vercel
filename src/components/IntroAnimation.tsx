@@ -128,6 +128,8 @@ const caseStudies = [
       }
     ],
     outcomes: ["Faster Prospect Discovery", "More Relevant Engagement", "Higher Sales Productivity"],
+    demoUrl: "https://prop-flow-three.vercel.app/",
+    demoLabel: "Demo Sales AI",
     videoSrc: ""
   },
   {
@@ -573,6 +575,17 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
                         ))}
                       </div>
                     </div>
+                    {"demoUrl" in study && study.demoUrl ? (
+                      <a
+                        href={study.demoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex w-fit items-center gap-2 rounded-full border border-[#3a3a3a] bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-[#cfcfcf] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                      >
+                        {"demoLabel" in study && study.demoLabel ? study.demoLabel : "Open demo"}
+                        <ArrowRight size={16} aria-hidden="true" />
+                      </a>
+                    ) : null}
                   </div>
 
                   <div className={`col-start-1 row-start-1 flex flex-col gap-3 transition-opacity duration-200 ${mode === "video" ? "visible opacity-100" : "invisible opacity-0"}`}>
