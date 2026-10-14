@@ -106,6 +106,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Faster Document Reviews", "Reduced Administrative Work", "Better Legal Visibility"],
+    youtubeEmbedUrl: "https://www.youtube.com/embed/W1ILRCFWveA?vq=hd720&hd=1",
     videoSrc: ""
   },
   {
