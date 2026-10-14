@@ -131,6 +131,7 @@ const caseStudies = [
     outcomes: ["Faster Prospect Discovery", "More Relevant Engagement", "Higher Sales Productivity"],
     demoUrl: "https://prop-flow-three.vercel.app/",
     demoLabel: "Demo Sales AI",
+    youtubeEmbedUrl: "https://www.youtube.com/embed/0ludNKDM9kQ?vq=hd720&hd=1",
     videoSrc: ""
   },
   {
