@@ -571,8 +571,8 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
                   </div>
                 </header>
 
-                <div className="grid">
-                  <div className={`col-start-1 row-start-1 flex flex-col gap-5 transition-opacity duration-200 ${mode === "text" ? "visible opacity-100" : "invisible opacity-0"}`}>
+                <div>
+                  <div className={`${mode === "text" ? "flex" : "hidden"} flex-col gap-5 transition-opacity duration-200`}>
                     <p className="m-0 max-w-[62ch] text-pretty text-[17px] leading-[1.6] text-[#cfcfcf]">{study.summary}</p>
                     {"capabilities" in study && study.capabilities ? (
                       <div className="grid gap-3 md:grid-cols-3">
@@ -608,7 +608,7 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
                     ) : null}
                   </div>
 
-                  <div className={`col-start-1 row-start-1 flex flex-col gap-3 transition-opacity duration-200 ${mode === "video" ? "visible opacity-100" : "invisible opacity-0"}`}>
+                  <div className={`${mode === "video" ? "flex" : "hidden"} flex-col gap-3 transition-opacity duration-200`}>
                     {"youtubeEmbedUrl" in study && study.youtubeEmbedUrl ? (
                       <iframe
                         className="block aspect-video w-full rounded-2xl bg-black"
