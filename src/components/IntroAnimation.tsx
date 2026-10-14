@@ -156,7 +156,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Faster Customer Resolution", "Scalable Customer Support", "Better Customer Experiences"],
-    videoSrc: ""
+    videoSrc: "/case-studies/customer-care-ai.mp4"
   }
 ];
 
