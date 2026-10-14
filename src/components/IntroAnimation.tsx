@@ -159,6 +159,17 @@ const caseStudies = [
 ];
 
 type CaseStudyMode = "text" | "video";
+type CaseStudy = (typeof caseStudies)[number];
+
+const hasCaseStudyVideo = (study: CaseStudy) =>
+  ("youtubeEmbedUrl" in study && Boolean(study.youtubeEmbedUrl)) || Boolean(study.videoSrc);
+
+const defaultModeForStudy = (study: CaseStudy): CaseStudyMode => (hasCaseStudyVideo(study) ? "video" : "text");
+
+const resolveCaseStudyMode = (study: CaseStudy, requestedMode?: CaseStudyMode): CaseStudyMode => {
+  const mode = requestedMode ?? defaultModeForStudy(study);
+  return mode === "video" && !hasCaseStudyVideo(study) ? "text" : mode;
+};
 
 export function IntroAnimation() {
   const [phase, setPhase] = useState(0);
@@ -423,16 +434,17 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
   const sectionRef = useRef<HTMLElement>(null);
   const [modes, setModes] = useState<Record<number, CaseStudyMode>>({});
   const [focusMode, setFocusMode] = useState(false);
-  const resolvedModes = caseStudies.map((_, index) => modes[index] ?? "text");
+  const resolvedModes = caseStudies.map((study, index) => resolveCaseStudyMode(study, modes[index]));
   const allText = resolvedModes.every((mode) => mode === "text");
-  const allVideo = resolvedModes.every((mode) => mode === "video");
+  const videoCapableModes = resolvedModes.filter((_, index) => hasCaseStudyVideo(caseStudies[index]));
+  const allVideo = videoCapableModes.length > 0 && videoCapableModes.every((mode) => mode === "video");
 
   const setAll = (mode: CaseStudyMode) => {
-    setModes(Object.fromEntries(caseStudies.map((_, index) => [index, mode])));
+    setModes(Object.fromEntries(caseStudies.map((study, index) => [index, resolveCaseStudyMode(study, mode)])));
   };
 
   const setMode = (index: number, mode: CaseStudyMode) => {
-    setModes((currentModes) => ({ ...currentModes, [index]: mode }));
+    setModes((currentModes) => ({ ...currentModes, [index]: resolveCaseStudyMode(caseStudies[index], mode) }));
   };
 
   const jumpToCase = (index: number) => {
@@ -531,6 +543,7 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
           {caseStudies.map((study, index) => {
             const mode = resolvedModes[index];
             const number = String(index + 1).padStart(2, "0");
+            const hasVideo = hasCaseStudyVideo(study);
 
             return (
               <article id={`case-${index + 1}`} key={study.title} className="flex scroll-mt-6 flex-col gap-5 rounded-2xl bg-[#1c1c1c] p-[clamp(22px,2.6vw,32px)]">
@@ -547,7 +560,13 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
 
                   <div role="tablist" aria-label={`${study.title} view`} className="inline-flex shrink-0 gap-0.5 rounded-full bg-[#2e2e2e] p-1">
                     <CaseTab active={mode === "text"} label="Overview" onClick={() => setMode(index, "text")} />
-                    <CaseTab active={mode === "video"} label="Video explainer" icon={<Play size={14} fill="currentColor" strokeWidth={0} />} onClick={() => setMode(index, "video")} />
+                    <CaseTab
+                      active={mode === "video"}
+                      label="Video explainer"
+                      icon={<Play size={14} fill="currentColor" strokeWidth={0} />}
+                      disabled={!hasVideo}
+                      onClick={() => setMode(index, "video")}
+                    />
                   </div>
                 </header>
 
@@ -667,11 +686,13 @@ function CaseTab({
   active,
   label,
   icon,
+  disabled = false,
   onClick
 }: {
   active: boolean;
   label: string;
   icon?: React.ReactNode;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
@@ -679,8 +700,9 @@ function CaseTab({
       type="button"
       role="tab"
       aria-selected={active}
+      disabled={disabled}
       className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
-        active ? "bg-white text-black" : "bg-transparent text-[#bdbdbd] hover:text-white"
+        active ? "bg-white text-black" : disabled ? "cursor-not-allowed bg-transparent text-[#7a7a7a] opacity-50" : "bg-transparent text-[#bdbdbd] hover:text-white"
       }`}
       onClick={onClick}
     >
