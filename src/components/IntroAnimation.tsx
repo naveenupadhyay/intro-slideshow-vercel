@@ -15,6 +15,7 @@ const isMobileViewport = () =>
   typeof window !== "undefined" && window.matchMedia(MOBILE_GESTURE_QUERY).matches;
 
 type CaseStudy = {
+  anchor: string;
   domain: string;
   title: string;
   summary: string;
@@ -28,6 +29,7 @@ type CaseStudy = {
 
 const caseStudies: CaseStudy[] = [
   {
+    anchor: "forgeos",
     domain: "Engineering",
     title: "ForgeOS — Human-Led, AI-Powered Engineering",
     summary:
@@ -50,6 +52,7 @@ const caseStudies: CaseStudy[] = [
     videoSrc: "/case-studies/forgeos.mp4"
   },
   {
+    anchor: "education-ai",
     domain: "Education",
     title: "Education AI — Intelligent Learning Platforms",
     summary:
@@ -73,6 +76,7 @@ const caseStudies: CaseStudy[] = [
     videoSrc: "/case-studies/education-ai.mp4"
   },
   {
+    anchor: "finance-ai",
     domain: "Finance",
     title: "Finance & Accounting — Intelligent Financial Operations",
     summary:
@@ -95,6 +99,7 @@ const caseStudies: CaseStudy[] = [
     videoSrc: "/case-studies/finance-ai.mp4"
   },
   {
+    anchor: "legal-ai",
     domain: "Legal",
     title: "Legal AI — Intelligent Legal Workflows",
     summary:
@@ -118,6 +123,7 @@ const caseStudies: CaseStudy[] = [
     videoSrc: "/case-studies/legal-ai.mp4"
   },
   {
+    anchor: "sales-ai",
     domain: "Sales",
     title: "Sales Outreach — AI-Powered Revenue Intelligence",
     summary:
@@ -142,6 +148,7 @@ const caseStudies: CaseStudy[] = [
     videoSrc: "/case-studies/sales-ai.mp4"
   },
   {
+    anchor: "customer-care-ai",
     domain: "Customer care",
     title: "Customer Care — AI-Powered Customer Experience",
     summary:
@@ -447,6 +454,15 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
   const videoCapableModes = resolvedModes.filter((_, index) => hasCaseStudyVideo(caseStudies[index]));
   const allVideo = videoCapableModes.length > 0 && videoCapableModes.every((mode) => mode === "video");
 
+  useEffect(() => {
+    if (!standalone || !window.location.hash) return;
+
+    const anchor = decodeURIComponent(window.location.hash.slice(1));
+    window.requestAnimationFrame(() => {
+      document.getElementById(anchor)?.scrollIntoView({ block: "start" });
+    });
+  }, [standalone]);
+
   const setAll = (mode: CaseStudyMode) => {
     setModes(Object.fromEntries(caseStudies.map((study, index) => [index, resolveCaseStudyMode(study, mode)])));
   };
@@ -456,7 +472,7 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
   };
 
   const jumpToCase = (index: number) => {
-    document.getElementById(`case-${index + 1}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(`case-${caseStudies[index].anchor}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const toggleFocus = (nextFocusMode: boolean) => {
@@ -554,7 +570,7 @@ export function CaseStudiesSection({ standalone = false }: { standalone?: boolea
             const hasVideo = hasCaseStudyVideo(study);
 
             return (
-              <article id={`case-${index + 1}`} key={study.title} className="flex scroll-mt-6 flex-col gap-5 rounded-2xl bg-[#1c1c1c] p-[clamp(22px,2.6vw,32px)]">
+              <article id={`case-${study.anchor}`} key={study.title} className="flex scroll-mt-6 flex-col gap-5 rounded-2xl bg-[#1c1c1c] p-[clamp(22px,2.6vw,32px)]">
                 <header className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex min-w-0 flex-[1_1_220px] flex-col gap-2.5">
                     <div className="flex items-center gap-2.5">
