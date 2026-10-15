@@ -14,7 +14,19 @@ const CASE_STUDIES_URL = "https://www.naveenupadhyay.com/case-studies";
 const isMobileViewport = () =>
   typeof window !== "undefined" && window.matchMedia(MOBILE_GESTURE_QUERY).matches;
 
-const caseStudies = [
+type CaseStudy = {
+  domain: string;
+  title: string;
+  summary: string;
+  capabilities?: { title: string; description: string }[];
+  outcomes: string[];
+  youtubeEmbedUrl?: string;
+  videoSrc?: string;
+  demoUrl?: string;
+  demoLabel?: string;
+};
+
+const caseStudies: CaseStudy[] = [
   {
     domain: "Engineering",
     title: "ForgeOS — Human-Led, AI-Powered Engineering",
@@ -35,8 +47,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Higher Engineering Leverage", "Faster Idea-to-Production", "Production-Grade Quality"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/T6-zwdcmdOs?vq=hd720&hd=1",
-    videoSrc: ""
+    videoSrc: "/case-studies/forgeos.mp4"
   },
   {
     domain: "Education",
@@ -157,7 +168,6 @@ const caseStudies = [
 ];
 
 type CaseStudyMode = "text" | "video";
-type CaseStudy = (typeof caseStudies)[number];
 
 const hasCaseStudyVideo = (study: CaseStudy) =>
   ("youtubeEmbedUrl" in study && Boolean(study.youtubeEmbedUrl)) || Boolean(study.videoSrc);
