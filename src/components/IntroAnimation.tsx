@@ -59,8 +59,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Personalized Learning at Scale", "Higher Educator Productivity", "Intelligent Learning Experiences"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/aDXsjcSA3t8?vq=hd720&hd=1",
-    videoSrc: ""
+    videoSrc: "/case-studies/education-ai.mp4"
   },
   {
     domain: "Finance",
@@ -82,8 +81,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Reduced Manual Processing", "Faster Financial Operations", "Stronger Financial Controls"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/Drj5GE8IVx0?vq=hd720&hd=1",
-    videoSrc: ""
+    videoSrc: "/case-studies/finance-ai.mp4"
   },
   {
     domain: "Legal",
@@ -106,8 +104,7 @@ const caseStudies = [
       }
     ],
     outcomes: ["Faster Document Reviews", "Reduced Administrative Work", "Better Legal Visibility"],
-    youtubeEmbedUrl: "https://www.youtube.com/embed/W1ILRCFWveA?vq=hd720&hd=1",
-    videoSrc: ""
+    videoSrc: "/case-studies/legal-ai.mp4"
   },
   {
     domain: "Sales",
@@ -131,8 +128,7 @@ const caseStudies = [
     outcomes: ["Faster Prospect Discovery", "More Relevant Engagement", "Higher Sales Productivity"],
     demoUrl: "https://prop-flow-three.vercel.app/",
     demoLabel: "Demo Sales AI",
-    youtubeEmbedUrl: "https://www.youtube.com/embed/0ludNKDM9kQ?vq=hd720&hd=1",
-    videoSrc: ""
+    videoSrc: "/case-studies/sales-ai.mp4"
   },
   {
     domain: "Customer care",
